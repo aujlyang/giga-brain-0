@@ -1,12 +1,22 @@
 """Fine-tuning config for LeRobot SO-ARM101 / SO-101 follower datasets.
 
-Before training, update ``data_paths``, ``project_dir``, ``norm_stats_path``,
-``gpu_ids``, ``batch_size_per_gpu``, and ``present_img_keys`` for your setup.
-The LeRobot dataset metadata must use robot_type='so101_follower'.
+Defaults are set for a 2 x 48GB GPU workstation. Before training, update
+``data_paths``, ``project_dir``, ``norm_stats_path``, and ``present_img_keys``
+for your dataset. The LeRobot dataset metadata must use
+robot_type='so101_follower'.
 """
 
 action_chunk = 50
 embodiment_id = '3'
+
+# Recommended starting point for 2 x 48GB GPUs. Effective batch size is
+# 2 GPUs * 4 samples/GPU * 8 accumulation steps = 64 samples. If you hit OOM,
+# use batch_size_per_gpu=2 and gradient_accumulation_steps=16; if memory is
+# comfortably below capacity, try batch_size_per_gpu=8 and
+# gradient_accumulation_steps=4 to keep the same effective batch size.
+batch_size_per_gpu = 4
+gradient_accumulation_steps = 8
+num_workers = 8
 
 # SO-ARM101 is a single 6-DoF follower arm. Use delta targets for arm joints
 # and an absolute target for the gripper. Change to all False if your actions
@@ -40,7 +50,7 @@ config = dict(
     runners=['giga_brain_0.GigaBrain0Trainer'],
     project_dir='./experiments/vla/giga_brain_0_so_arm101/finetune_debug',
     launch=dict(
-        gpu_ids=[0, 1, 2, 3, 4, 5, 6, 7],
+        gpu_ids=[0, 1],
         distributed_type='FSDP',
         fsdp_config=dict(
             fsdp_version='2',
@@ -53,8 +63,8 @@ config = dict(
     dataloaders=dict(
         train=dict(
             data_or_config=data_or_config,
-            batch_size_per_gpu=32,
-            num_workers=16,
+            batch_size_per_gpu=batch_size_per_gpu,
+            num_workers=num_workers,
             transform=dict(
                 type='GigaBrain0Transform',
                 is_train=True,
@@ -120,7 +130,7 @@ config = dict(
     train=dict(
         resume=True,
         max_steps=50000,
-        gradient_accumulation_steps=1,
+        gradient_accumulation_steps=gradient_accumulation_steps,
         mixed_precision='no',
         checkpoint_interval=1000,
         checkpoint_total_limit=5,
