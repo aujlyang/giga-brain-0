@@ -156,12 +156,14 @@ class GetEmbodimentId:
         0: 'agilex',
         1: 'agibot_g1',
         2: 'agibot_world',
+        3: 'so101_follower',
     }
 
     robot_type_mapping = {
         'agilex_cobot_magic': 0,
         'agibot_g1': 1,
         'agibot_world': 2,
+        'so101_follower': 3,
     }
 
     def __call__(self, data: dict[str, Any]) -> dict[str, Any]:

@@ -20,6 +20,7 @@ class EmbodimentId(IntEnum):
     AGILEX = 0
     AGIBOT_G1 = 1
     AGIBOT_WORLD = 2
+    SO101_FOLLOWER = 3
 
 
 class RobotType(StrEnum):
@@ -28,12 +29,14 @@ class RobotType(StrEnum):
     AGILEX_COBOT_MAGIC = 'agilex_cobot_magic'
     AGIBOT_G1 = 'agibot_g1'
     AGIBOT_WORLD = 'agibot_world'
+    SO101_FOLLOWER = 'so101_follower'
 
 
 robot_type_mapping: dict[RobotType, EmbodimentId] = {
     RobotType.AGILEX_COBOT_MAGIC: EmbodimentId.AGILEX,
     RobotType.AGIBOT_G1: EmbodimentId.AGIBOT_G1,
     RobotType.AGIBOT_WORLD: EmbodimentId.AGIBOT_WORLD,
+    RobotType.SO101_FOLLOWER: EmbodimentId.SO101_FOLLOWER,
 }
 
 
